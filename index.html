@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Lima ❤️ Satya</title>
+
+<style>
+body{
+margin:0;
+font-family:"Segoe UI",sans-serif;
+color:white;
+text-align:center;
+overflow:hidden;
+background:linear-gradient(#050510,#120a25,#1a0f3a);
+}
+
+h2{text-shadow:0 0 15px #ff4d6d;margin:10px}
+
+canvas#stars{
+position:fixed;
+top:0;left:0;
+z-index:-1;
+}
+
+/* BIG TITLE */
+.titleSlide{
+display:flex;
+flex-direction:column;
+justify-content:center;
+align-items:center;
+height:70vh;
+font-size:clamp(40px,10vw,80px);
+font-weight:bold;
+text-shadow:0 0 25px #ff4d6d,0 0 50px #ff4d6d;
+}
+
+.titleSlide span{
+font-size:clamp(22px,6vw,40px);
+margin-top:10px;
+}
+
+/* TEXT SLIDES */
+.slide{
+display:none;
+height:70vh;
+padding:30px;
+display:flex;
+justify-content:center;
+align-items:center;
+text-align:center;
+font-size:clamp(22px,5vw,42px);
+line-height:1.4;
+animation:fade 1.2s;
+}
+
+@keyframes fade{
+from{opacity:0;transform:translateY(10px);}
+to{opacity:1;}
+}
+
+/* IMAGE SLIDES */
+.slide img{
+width:100%;
+height:80vh;
+object-fit:contain;
+background:black;
+border-radius:22px;
+border:5px solid #ff4d6d;
+box-shadow:0 0 35px #ff4d6d88;
+}
+
+
+.slideshow{
+width:95%;
+max-width:420px;
+margin:auto;
+user-select:none;
+}
+
+button{
+padding:14px 24px;
+border:none;
+border-radius:25px;
+background:#ff4d6d;
+color:white;
+font-size:1em;
+margin:10px;
+cursor:pointer;
+box-shadow:0 0 15px #ff4d6d88;
+}
+
+#musicBtn{
+position:fixed;
+top:10px;
+right:10px;
+width:44px;
+height:44px;
+border-radius:50%;
+font-size:18px;
+padding:0;
+z-index:50;
+}
+
+#proposalBtn{
+display:none;
+position:fixed;
+bottom:15px;
+left:50%;
+transform:translateX(-50%);
+}
+
+#proposal{
+display:none;
+position:fixed;
+top:0;left:0;
+width:100%;height:100%;
+background:#000;
+z-index:20;
+padding-top:80px;
+}
+
+#ring{
+font-size:80px;
+animation:ringPop 1.5s ease;
+}
+
+@keyframes ringPop{
+0%{transform:scale(0)}
+60%{transform:scale(1.4)}
+100%{transform:scale(1)}
+}
+
+.heart{
+position:fixed;
+font-size:24px;
+animation:burst 1.6s ease-out forwards;
+}
+
+@keyframes burst{
+to{transform:translateY(-140px) scale(0);opacity:0;}
+}
+
+canvas#fireworks{
+position:fixed;
+top:0;left:0;
+pointer-events:none;
+z-index:5;
+}
+</style>
+</head>
+
+<body>
+
+<canvas id="stars"></canvas>
+
+<button id="musicBtn" onclick="toggleMusic()">🎵</button>
+
+<h2>Lima ❤️ Satya</h2>
+
+<div class="slideshow" id="slider">
+
+<div class="slide titleSlide">
+HAPPY ANNIVERSARY
+<span>NUNGCITHOIBI ❤️</span>
+</div>
+
+<div class="slide">
+Ei Lima ❤️  
+We started as bff…  
+houjik love asi deep oirabani.  
+I love you forever.
+</div>
+
+<div class="slide"><img src="photo1.jpg"></div>
+<div class="slide"><img src="photo2.jpg"></div>
+<div class="slide"><img src="photo3.jpg"></div>
+<div class="slide"><img src="photo4.jpg"></div>
+<div class="slide"><img src="photo5.jpg"></div>
+<div class="slide"><img src="photo6.jpg"></div>
+<div class="slide"><img src="photo7.jpg"></div>
+
+<div class="slide">
+I don’t expect anything except your time and your love.  
+That’s all my heart asks for.  
+With you beside me, even the simplest moments feel perfect. ❤️
+</div>
+
+</div>
+
+<button id="proposalBtn" onclick="openProposal()">Proposal 💍</button>
+
+<div id="proposal">
+<div id="ring">💍</div>
+<h2>Will you stay forever with me? ❤️</h2>
+<button onclick="yes()">YES</button>
+<button onclick="no()">NO</button>
+<p id="answer"></p>
+</div>
+
+<audio id="music" loop>
+<source src="music.mp3" type="audio/mpeg">
+</audio>
+
+<canvas id="fireworks"></canvas>
+
+<script>
+let index=0;
+const slides=document.querySelectorAll(".slide");
+
+function show(i){
+slides.forEach(s=>s.style.display="none");
+slides[i].style.display="flex";
+heartBurst();
+document.getElementById("proposalBtn").style.display=
+(i===slides.length-1)?"block":"none";
+}
+show(index);
+
+function next(){index=(index+1)%slides.length;show(index);}
+function prev(){index=(index-1+slides.length)%slides.length;show(index);}
+
+let startX=0;
+const slider=document.getElementById("slider");
+
+slider.addEventListener("touchstart",e=>startX=e.touches[0].clientX);
+slider.addEventListener("touchend",e=>{
+let endX=e.changedTouches[0].clientX;
+if(startX-endX>40) next();
+if(endX-startX>40) prev();
+});
+
+slider.addEventListener("mousedown",e=>startX=e.clientX);
+slider.addEventListener("mouseup",e=>{
+let endX=e.clientX;
+if(startX-endX>40) next();
+if(endX-startX>40) prev();
+});
+
+document.addEventListener("keydown",e=>{
+if(e.key==="ArrowRight") next();
+if(e.key==="ArrowLeft") prev();
+});
+
+let music=document.getElementById("music");
+let playing=false;
+
+function toggleMusic(){
+if(playing){
+music.pause();
+musicBtn.innerHTML="🎵";
+playing=false;
+}else{
+music.play();
+musicBtn.innerHTML="⏸";
+playing=true;
+}
+}
+
+function heartBurst(){
+for(let i=0;i<10;i++){
+const h=document.createElement("div");
+h.className="heart";
+h.innerHTML="❤️";
+h.style.left=Math.random()*100+"vw";
+h.style.bottom="100px";
+document.body.appendChild(h);
+setTimeout(()=>h.remove(),1600);
+}
+}
+
+const starCanvas=document.getElementById("stars");
+const sctx=starCanvas.getContext("2d");
+starCanvas.width=innerWidth;
+starCanvas.height=innerHeight;
+
+let stars=[];
+for(let i=0;i<150;i++){
+stars.push({x:Math.random()*innerWidth,y:Math.random()*innerHeight,r:Math.random()*1.5});
+}
+
+function drawStars(){
+sctx.clearRect(0,0,innerWidth,innerHeight);
+sctx.fillStyle="white";
+stars.forEach(s=>{
+sctx.beginPath();
+sctx.arc(s.x,s.y,s.r,0,Math.PI*2);
+sctx.fill();
+});
+requestAnimationFrame(drawStars);
+}
+drawStars();
+
+const canvas=document.getElementById("fireworks");
+const ctx=canvas.getContext("2d");
+canvas.width=innerWidth;
+canvas.height=innerHeight;
+
+function explode(){
+for(let i=0;i<120;i++){
+ctx.fillStyle=`hsl(${Math.random()*360},100%,60%)`;
+ctx.beginPath();
+ctx.arc(Math.random()*canvas.width,
+Math.random()*canvas.height,
+2,0,Math.PI*2);
+ctx.fill();
+}
+setTimeout(()=>ctx.clearRect(0,0,canvas.width,canvas.height),500);
+}
+
+function fireworksShow(){
+setInterval(explode,300);
+}
+
+function openProposal(){
+document.getElementById("proposal").style.display="block";
+heartBurst();
+fireworksShow();
+}
+
+function yes(){
+document.getElementById("answer").innerHTML="Forever ❤️";
+heartBurst();
+}
+
+function no(){
+document.getElementById("answer").innerHTML="Too late… already forever 😌❤️";
+heartBurst();
+}
+</script>
+
+</body>
+</html>
